@@ -46,31 +46,46 @@ connection.query(query , (error, result)=>{
 
 //this function get articles by author return all his articles
 const getArticlesByAuthor = (req, res) => {
-  let authorName = req.query.author;
+  let authorName = req.params.author;
+  const query = `SELECT * FROM articles
+  WHERE author_id =? AND is_deleted=0`
+const data =[authorName]
+connection.query(query , data,  (err, result)=>{
+  if (err) {
+    res.status(404).json({
+      success: false,
+      message: `Server Error`,
+      error:err})
+}
+res.status(200).json({success : true ,
+  msg:`all ${authorName} articles : `
+  ,result:result})
+})
+}
 
-  articlesModel
-    .find({ author: authorName })
-    .then((articles) => {
-      if (!articles.length) {
-        return res.status(404).json({
-          success: false,
-          message: `The author => ${authorName} not found`,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        message: `All the articles for the author => ${authorName}`,
-        articles: articles,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
-    });
-};
+  // articlesModel
+  //   .find({ author: authorName })
+  //   .then((articles) => {
+  //     if (!articles.length) {
+  //       return res.status(404).json({
+  //         success: false,
+  //         message: `The author => ${authorName} not found`,
+  //       });
+  //     }
+  //     res.status(200).json({
+  //       success: true,
+  //       message: `All the articles for the author => ${authorName}`,
+  //       articles: articles,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: `Server Error`,
+  //       // err: err,
+  //     });
+  //   });
+
 
 //this function get one article by specific id and return the specific article
 const getAnArticleById = (req, res) => {
@@ -106,7 +121,8 @@ const createNewArticle = (req, res) => {
   const { 
     title,
     description,
-    author_id, is_deleted } = req.body;
+    author_id,
+     is_deleted } = req.body;
   const queryString = `INSERT INTO articles (
     title,
     description,
@@ -116,7 +132,8 @@ const createNewArticle = (req, res) => {
   const data = [
     title,
     description,
-    author_id, is_deleted ];
+    author_id, 
+    is_deleted  ];
   connection.query(queryString, data, (err, result) => {
     if (err) {
       res.status(500).json({

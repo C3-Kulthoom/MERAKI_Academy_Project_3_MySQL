@@ -28,7 +28,7 @@ const articlesRouter = express.Router();
 //delete -    http://localhost:5000/articles
 
 articlesRouter.get("/", getAllArticles);
-articlesRouter.get("/search_1", getArticlesByAuthor);
+articlesRouter.get("/search_1/:author", getArticlesByAuthor);
 articlesRouter.get("/search_2", getAnArticleById);
 
  articlesRouter.post("/", authentication, createNewArticle);
