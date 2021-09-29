@@ -2,28 +2,47 @@ const connection  = require("../../db/db");
 
 // this function return all articles
 const getAllArticles = (req, res) => {
-  articlesModel
-    .find({})
-    .populate("author", "firstName lastName")
-    .populate({
-      path: "comments",
-      populate: { path: "commenter",select: 'firstName lastName -_id', model: "User" },
-    })
-    .then((articles) => {
-      res.status(200).json({
-        success: true,
-        message: `All the articles`,
-        articles,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
+const query = `SELECT * FROM articles WHERE is_deleted=0 `
+
+connection.query(query , (error, result)=>{
+  if (error) {
+    res.status(500).json({
+      success: false,
+      message: `Server Error`,
+      error: error,
     });
+  }
+  res.status(200).json({success : true , message:"all  articles ", result:result});
+});
 };
+
+
+
+
+
+
+//   articlesModel
+//     .find({})
+//     .populate("author", "firstName lastName")
+//     .populate({
+//       path: "comments",
+//       populate: { path: "commenter",select: 'firstName lastName -_id', model: "User" },
+//     })
+//     .then((articles) => {
+//       res.status(200).json({
+//         success: true,
+//         message: `All the articles`,
+//         articles,
+//       });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         success: false,
+//         message: `Server Error`,
+//         // err: err,
+//       });
+//     });
+// };
 
 //this function get articles by author return all his articles
 const getArticlesByAuthor = (req, res) => {
