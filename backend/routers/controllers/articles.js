@@ -175,31 +175,44 @@ const createNewArticle = (req, res) => {
 
 //this function update article by it's id
 const updateAnArticleById = (req, res) => {
-  const _id = req.params.id;
-
-  articlesModel
-    .findByIdAndUpdate(_id, req.body, { new: true })
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          success: false,
-          message: `The Article => ${_id} not found`,
-        });
-      }
-      res.status(202).json({
-        success: true,
-        message: ` Success Article updated`,
-        article: result,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
-    });
+  const id = req.params.id;
+const description =req.body 
+const query = `UPDATE articles SET description="${description}" WHERE id= ? `
+const data = [id]
+connection.query(query,data,(err,result)=>{
+if (err) {
+  console.log(err.response);
+  return;
+}
+res.status(200).json({
+  success : true ,
+   message: `article ${id} updated `,
+result:result
+  });
+});
 };
+  // articlesModel
+  //   .findByIdAndUpdate(_id, req.body, { new: true })
+  //   .then((result) => {
+  //     if (!result) {
+  //       return res.status(404).json({
+  //         success: false,
+  //         message: `The Article => ${_id} not found`,
+  //       });
+  //     }
+  //     res.status(202).json({
+  //       success: true,
+  //       message: ` Success Article updated`,
+  //       article: result,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).json({
+  //       success: false,
+  //       message: `Server Error`,
+  //       // err: err,
+  //     });
+  //   });
 
 //this function delete a specific article using the id
 const deleteArticleById = (req, res) => {
