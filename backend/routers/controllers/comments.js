@@ -1,5 +1,4 @@
-const commentsModel = require("./../../db/models/comments");
-const articlesModel = require("../../db/models/articles");
+const connection  = require("../../db/db");
 
 const createNewComment = (req, res) => {
   const { comment, commenter } = req.body;

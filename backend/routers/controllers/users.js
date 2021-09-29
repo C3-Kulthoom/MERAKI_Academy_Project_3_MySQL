@@ -1,41 +1,31 @@
-const usersModel = require("../../db/models/users");
+const connection  = require("../../db/db");
 
 // this function creat new Auther(new user)
-const createNewAuthor = (req, res) => {
-  const { firstName, lastName, age, country, email, password, role } = req.body;
-  const user = new usersModel({
-    firstName,
-    lastName,
-    age,
-    country,
-    email,
-    password,
-    role,
-  });
-
-  user
-    .save()
-    .then((result) => {
-      res.status(201).json({
-        success: true,
-        message: `Success Author Added`,
-        author: result,
-      });
-    })
-    .catch((err) => {
-      if (err.keyPattern) {
-        return res.status(409).json({
-          success: false,
-          message: `The email already exists`,
-        });
-      }
+const bcrypt = require("bcrypt");
+// this function creat new Auther(new user)
+const createNewAuthor = async(req, res) => {
+  const { firstName, lastName, age, country, email, password, role_id } = req.body;
+  const bcryptPassword = await bcrypt.hash(password, 10);
+  const query = `INSERT INTO users (firstName, lastName, age, country,email,password,role_id) VALUES(?,?,?,?,?,?,?)`;
+  const data = [firstName, lastName, age, country,email,bcryptPassword,role_id];
+  connection.query(query, data, (err, result) => {
+    if (err) {
       res.status(500).json({
         success: false,
         message: `Server Error`,
-        err: err,
+        error: err,
       });
-    });
+    }
+    res.status(200);
+    res.json(result);
+  });
 };
+
+
+
+
+
+
 const getAllAuthors = (req,res) => {
   usersModel
     .find({})
