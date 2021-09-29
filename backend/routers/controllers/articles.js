@@ -177,7 +177,7 @@ const createNewArticle = (req, res) => {
 const updateAnArticleById = (req, res) => {
   const id = req.params.id;
 const description =req.body 
-const query = `UPDATE articles SET description="${description}" WHERE id= ? `
+const query = `UPDATE articles SET description="${description}" WHERE id= ${id} `
 const data = [id]
 connection.query(query,data,(err,result)=>{
 if (err) {
@@ -217,28 +217,55 @@ result:result
 //this function delete a specific article using the id
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
-  articlesModel
-    .findByIdAndDelete(id)
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          success: false,
-          message: `The Article => ${id} not found`,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        message: `Success Delete atricle with id => ${id}`,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
+  const query = `DELETE FROM articles WHERE id= ? `
+  const data = [id]
+  connection.query(query,data,(err,result)=>{
+  if (err) {
+    console.log(err.response);
+    return;
+  }
+  res.status(200).json({
+    success : true ,
+     message: `article ${id} deleted `,
+  result:result
     });
-};
+  });
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+//   const id = req.params.id;
+//   articlesModel
+//     .findByIdAndDelete(id)
+//     .then((result) => {
+//       if (!result) {
+//         return res.status(404).json({
+//           success: false,
+//           message: `The Article => ${id} not found`,
+//         });
+//       }
+//       res.status(200).json({
+//         success: true,
+//         message: `Success Delete atricle with id => ${id}`,
+//       });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         success: false,
+//         message: `Server Error`,
+//         // err: err,
+//       });
+//     });
+// };
 
 //this function delete all the articles for a specific author
 const deleteArticlesByAuthor = (req, res) => {
