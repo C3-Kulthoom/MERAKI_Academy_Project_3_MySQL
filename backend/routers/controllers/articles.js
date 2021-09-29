@@ -1,4 +1,4 @@
-const articlesModel = require("../../db/models/articles");
+const connection  = require("../../db/db");
 
 // this function return all articles
 const getAllArticles = (req, res) => {
@@ -84,31 +84,58 @@ const getAnArticleById = (req, res) => {
 
 //this function creat new article by take the info from the req the body and push to array then it return the new one
 const createNewArticle = (req, res) => {
-  const { title, description } = req.body;
-  const author = req.token.userId;
-  const newArticle = new articlesModel({
+  const { 
     title,
     description,
-    author,
-  });
-
-  newArticle
-    .save()
-    .then((article) => {
-      res.status(201).json({
-        success: true,
-        message: ` Success Article created`,
-        article: article,
-      });
-    })
-    .catch((err) => {
+    author_id, is_deleted } = req.body;
+  const queryString = `INSERT INTO articles (
+    title,
+    description,
+    author_id,
+    is_deleted
+  ) VALUES(?,?,?,?)`;
+  const data = [
+    title,
+    description,
+    author_id, is_deleted ];
+  connection.query(queryString, data, (err, result) => {
+    if (err) {
       res.status(500).json({
         success: false,
         message: `Server Error`,
-        // err: err,
-      });
+        error: err,
+      });}
+      res.status(200).json({success : true , message:"new article created", result:result});
     });
-};
+  };
+  
+
+
+//   const { title, description } = req.body;
+//   const author = req.token.userId;
+//   const newArticle = new articlesModel({
+//     title,
+//     description,
+//     author,
+//   });
+
+//   newArticle
+//     .save()
+//     .then((article) => {
+//       res.status(201).json({
+//         success: true,
+//         message: ` Success Article created`,
+//         article: article,
+//       });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         success: false,
+//         message: `Server Error`,
+//         // err: err,
+//       });
+//     });
+// };
 
 //this function update article by it's id
 const updateAnArticleById = (req, res) => {
