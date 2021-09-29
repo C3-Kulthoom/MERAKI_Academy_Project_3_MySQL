@@ -269,31 +269,44 @@ const deleteArticleById = (req, res) => {
 
 //this function delete all the articles for a specific author
 const deleteArticlesByAuthor = (req, res) => {
-  const author = req.body.author;
-
-  articlesModel
-    .deleteMany({ author })
-    .then((result) => {
-      if (!result.deletedCount) {
-        return res.status(404).json({
-          success: false,
-          message: `The Author not found`,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        message: `Success Delete atricles for the author => ${author}`,
-        result,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
+  const author_id = req.body.author_id;
+  const query = `DELETE FROM articles WHERE author_id= ? `
+  const data = [author_id]
+  connection.query(query,data,(err,result)=>{
+  if (err) {
+    console.log(err.response);
+    return;
+  }
+  res.status(200).json({
+    success : true ,
+     message: `article ${author_id} deleted `,
+  result:result
     });
-};
+  });
+  };
+//   articlesModel
+//     .deleteMany({ author })
+//     .then((result) => {
+//       if (!result.deletedCount) {
+//         return res.status(404).json({
+//           success: false,
+//           message: `The Author not found`,
+//         });
+//       }
+//       res.status(200).json({
+//         success: true,
+//         message: `Success Delete atricles for the author => ${author}`,
+//         result,
+//       });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({
+//         success: false,
+//         message: `Server Error`,
+//         // err: err,
+//       });
+//     });
+// };
 
 module.exports = {
   getAllArticles,
