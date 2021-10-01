@@ -90,9 +90,7 @@ const login = async (req, res) => {
 //           token: token,
 //         });
 //       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     })
+//         throw new Error(error.message);h
 //     .catch((err) => {
 //       res.status(500).json({
 //         success: false,

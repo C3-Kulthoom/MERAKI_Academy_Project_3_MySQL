@@ -201,21 +201,31 @@ const deleteArticleById = (req, res) => {
 
 //this function delete all the articles for a specific author
 const deleteArticlesByAuthor = (req, res) => {
-  const author_id = req.body.author_id;
-  const query = `DELETE FROM articles WHERE author_id= ? `
-  const data = [author_id]
-  connection.query(query,data,(err,result)=>{
+  const {firstName} = req.body
+  const query = `SELECT id  FROM users
+  WHERE firstName = ${firstName}  ` 
+  connection.query(query,(err,result)=>{
   if (err) {
     console.log(err.response);
     return;
   }
-  res.status(200).json({
-    success : true ,
-     message: `article ${author_id} deleted `,
-  result:result
+const id = result[0].id 
+ const query = `UPDATE articles SET is_deleted="1"  WHERE author_id= ${id}`
+ onnection.query(query, (error, result, fields) => {
+  if (error) {
+    console.log(error.response);
+    return;
+  }
+  res
+    .status(200)
+    .json({
+      success: true,
+      message: " article deleted by id   ",
+      result: result,
     });
-  });
-  };
+});
+});
+};
 //   articlesModel
 //     .deleteMany({ author })
 //     .then((result) => {
