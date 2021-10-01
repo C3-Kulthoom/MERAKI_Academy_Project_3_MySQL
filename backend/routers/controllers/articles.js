@@ -21,28 +21,11 @@ connection.query(query , (error, result)=>{
 
 
 
-//   articlesModel
-//     .find({})
-//     .populate("author", "firstName lastName")
-//     .populate({
-//       path: "comments",
-//       populate: { path: "commenter",select: 'firstName lastName -_id', model: "User" },
-//     })
-//     .then((articles) => {
-//       res.status(200).json({
-//         success: true,
-//         message: `All the articles`,
-//         articles,
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({
-//         success: false,
-//         message: `Server Error`,
-//         // err: err,
-//       });
-//     });
-// };
+
+
+
+
+
 
 //this function get articles by author return all his articles
 const getArticlesByAuthor = (req, res) => {
@@ -65,34 +48,44 @@ res.status(200).json({success : true ,
 
 
 
+
+
+
+
+
 //this function get one article by specific id and return the specific article
 const getAnArticleById = (req, res) => {
-  let id = req.query.id;
-  articlesModel
-    .findById(id)
-    .populate("author", "firstName -_id")
-    .exec()
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({
-          success: false,
-          message: `The Article not found`,
-        });
-      }
-      res.status(200).json({
-        success: true,
-        message: `The article ${id} `,
-        article: result,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: `Server Error`,
-        // err: err,
-      });
-    });
-};
+  let {id }= req.body;
+  // let authorid = req.body.author_id ;
+  const query = `SELECT firstName , author_id FROM users INNER JOIN  articles ON 
+  users.id = articles.author_id  WHERE  articles.id = ${id} AND articles.is_deleted=0 `
+  //WHERE  articles.id = ${id} AND is_deleted=0
+connection.query(query ,  (err, result)=>{
+  if (err) {
+    res.status(404).json({
+      success: false,
+      message: `Server Error`,
+      error:err})
+}
+res.status(200).json({success : true ,
+  msg:`success `
+  ,result:result})
+})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //this function creat new article by take the info from the req the body and push to array then it return the new one
 const createNewArticle = (req, res) => {
@@ -125,6 +118,15 @@ const createNewArticle = (req, res) => {
   
 
 
+
+
+
+
+
+
+
+
+
 //this function update article by it's id
 const updateAnArticleById = (req, res) => {
   
@@ -145,6 +147,12 @@ result:result
 });
 };
  
+
+
+
+
+
+
 
 //this function delete a specific article using the id
 const deleteArticleById = (req, res) => {
@@ -175,80 +183,38 @@ const deleteArticleById = (req, res) => {
 
 
 
-//   const id = req.params.id;
-//   articlesModel
-//     .findByIdAndDelete(id)
-//     .then((result) => {
-//       if (!result) {
-//         return res.status(404).json({
-//           success: false,
-//           message: `The Article => ${id} not found`,
-//         });
-//       }
-//       res.status(200).json({
-//         success: true,
-//         message: `Success Delete atricle with id => ${id}`,
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({
-//         success: false,
-//         message: `Server Error`,
-//         // err: err,
-//       });
-//     });
-// };
+
 
 //this function delete all the articles for a specific author
 const deleteArticlesByAuthor = (req, res) => {
-  const {firstName} = req.body
-  const query = `SELECT id  FROM users
-  WHERE firstName = ${firstName}  ` 
-  connection.query(query,(err,result)=>{
-  if (err) {
-    console.log(err.response);
-    return;
-  }
-const id = result[0].id 
- const query = `UPDATE articles SET is_deleted="1"  WHERE author_id= ${id}`
- onnection.query(query, (error, result, fields) => {
-  if (error) {
-    console.log(error.response);
-    return;
-  }
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: " article deleted by id   ",
-      result: result,
-    });
-});
-});
+  const authorName = req.body.firstName ;  
+  const query = `SELECT id FROM users WHERE firstName="${authorName}" ` ;
+  connection.query(query, (error, result, fields) => {
+    if (error) {
+      res.status(500).json({
+        success: false,
+        message: `Server Error`,
+        error: error,
+      });
+    }
+    const id = result[0].id
+  const query = `UPDATE articles SET is_deleted="1"  WHERE author_id= ${id}`;
+  connection.query(query, (error, result, fields) => {
+    if (error) {
+      console.log(error.response);
+      return;
+    }
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: " article deleted by id   ",
+        result: result,
+      });
+  });
+  });
 };
-//   articlesModel
-//     .deleteMany({ author })
-//     .then((result) => {
-//       if (!result.deletedCount) {
-//         return res.status(404).json({
-//           success: false,
-//           message: `The Author not found`,
-//         });
-//       }
-//       res.status(200).json({
-//         success: true,
-//         message: `Success Delete atricles for the author => ${author}`,
-//         result,
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({
-//         success: false,
-//         message: `Server Error`,
-//         // err: err,
-//       });
-//     });
-// };
+
 
 module.exports = {
   getAllArticles,
