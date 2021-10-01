@@ -1,18 +1,16 @@
 const connection  = require("../../db/db");
 
 const createNewComment = (req, res) => {
-  const { comment, commenter } = req.body;
+  const article_id = req.params.id 
+  const { comment,
+    commenter_id } = req.body;
   const queryString = `INSERT INTO comments (
     comment,
-    article_id,
-    commenter_id,
-    is_deleted,
-  ) VALUES(?,?,?,?)`;
+    commenter_id
+  ) VALUES(?,?)`;
   const data = [
     comment,
-article_id,
-commenter_id,
-is_deleted ];
+commenter_id];
   connection.query(queryString, data, (err, result) => {
     if (err) {
       res.status(500).json({
@@ -20,7 +18,7 @@ is_deleted ];
         message: `Server Error`,
         error: err,
       });}
-      res.status(200).json({success : true , message:"new comment  created", result:result});
+      res.status(200).json({success : true , message:"new comment created", result:result});
     });
   };
 
