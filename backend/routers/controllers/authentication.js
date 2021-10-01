@@ -32,16 +32,22 @@ const login = async (req, res) => {
           message: `Email and Password are correct`,
           token: token,
         });
+
+
+        
       }else{
         res.status(403).json({
           success: false,
           message: `Password is not correct`,
         });
       };
+
+
+
       if(err){
        res.status(500).json({
          success: false,
-         message:  `Server Error`,
+         message:  `email not exist `,
        });
       }
     }

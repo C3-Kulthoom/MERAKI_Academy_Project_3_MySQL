@@ -122,18 +122,18 @@ const createNewArticle = (req, res) => {
     title,
     description,
     author_id,
-     is_deleted } = req.body;
+      } = req.body;
   const queryString = `INSERT INTO articles (
     title,
     description,
-    author_id,
-    is_deleted
-  ) VALUES(?,?,?,?)`;
+    author_id
+  
+  ) VALUES(?,?,?)`;
   const data = [
     title,
     description,
     author_id, 
-    is_deleted  ];
+     ];
   connection.query(queryString, data, (err, result) => {
     if (err) {
       res.status(500).json({
