@@ -6,11 +6,12 @@ const createNewComment = (req, res) => {
     commenter_id } = req.body;
   const queryString = `INSERT INTO comments (
     comment,
-    commenter_id
-  ) VALUES(?,?)`;
+    commenter_id,
+    article_id
+  ) VALUES(?,?,?)`;
   const data = [
     comment,
-commenter_id];
+commenter_id,article_id];
   connection.query(queryString, data, (err, result) => {
     if (err) {
       res.status(500).json({

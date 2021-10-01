@@ -41,7 +41,6 @@ articlesRouter.delete("/", deleteArticlesByAuthor);
 articlesRouter.post(
   "/:id/comments",
   authentication,
-  authorization("CREATE_COMMENTS"),
   createNewComment
 );
 
