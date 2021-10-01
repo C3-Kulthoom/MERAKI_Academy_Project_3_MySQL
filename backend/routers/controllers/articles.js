@@ -46,10 +46,10 @@ connection.query(query , (error, result)=>{
 
 //this function get articles by author return all his articles
 const getArticlesByAuthor = (req, res) => {
-  let authorName = req.params.author;
+  let authorid = req.body.author_id ;
   const query = `SELECT * FROM articles
   WHERE author_id =? AND is_deleted=0`
-const data =[authorName]
+const data =[authorid]
 connection.query(query , data,  (err, result)=>{
   if (err) {
     res.status(404).json({
@@ -58,33 +58,11 @@ connection.query(query , data,  (err, result)=>{
       error:err})
 }
 res.status(200).json({success : true ,
-  msg:`all ${authorName} articles : `
+  msg:`all ${authorid} articles : `
   ,result:result})
 })
 }
 
-  // articlesModel
-  //   .find({ author: authorName })
-  //   .then((articles) => {
-  //     if (!articles.length) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         message: `The author => ${authorName} not found`,
-  //       });
-  //     }
-  //     res.status(200).json({
-  //       success: true,
-  //       message: `All the articles for the author => ${authorName}`,
-  //       articles: articles,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).json({
-  //       success: false,
-  //       message: `Server Error`,
-  //       // err: err,
-  //     });
-  //   });
 
 
 //this function get one article by specific id and return the specific article
@@ -147,39 +125,14 @@ const createNewArticle = (req, res) => {
   
 
 
-//   const { title, description } = req.body;
-//   const author = req.token.userId;
-//   const newArticle = new articlesModel({
-//     title,
-//     description,
-//     author,
-//   });
-
-//   newArticle
-//     .save()
-//     .then((article) => {
-//       res.status(201).json({
-//         success: true,
-//         message: ` Success Article created`,
-//         article: article,
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({
-//         success: false,
-//         message: `Server Error`,
-//         // err: err,
-//       });
-//     });
-// };
-
 //this function update article by it's id
 const updateAnArticleById = (req, res) => {
+  
   const id = req.params.id;
-const description =req.body 
-const query = `UPDATE articles SET description="${description}" WHERE id= ${id} `
-const data = [id]
-connection.query(query,data,(err,result)=>{
+  const {description,title} =req.body
+  const query = `UPDATE articles SET  title = "${title}" , description="${description}" WHERE id= ${id}`;
+// const data = [id]
+connection.query(query,(err,result)=>{
 if (err) {
   console.log(err.response);
   return;
@@ -191,28 +144,7 @@ result:result
   });
 });
 };
-  // articlesModel
-  //   .findByIdAndUpdate(_id, req.body, { new: true })
-  //   .then((result) => {
-  //     if (!result) {
-  //       return res.status(404).json({
-  //         success: false,
-  //         message: `The Article => ${_id} not found`,
-  //       });
-  //     }
-  //     res.status(202).json({
-  //       success: true,
-  //       message: ` Success Article updated`,
-  //       article: result,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).json({
-  //       success: false,
-  //       message: `Server Error`,
-  //       // err: err,
-  //     });
-  //   });
+ 
 
 //this function delete a specific article using the id
 const deleteArticleById = (req, res) => {
