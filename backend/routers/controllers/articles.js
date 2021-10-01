@@ -149,7 +149,7 @@ result:result
 //this function delete a specific article using the id
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
-  const query = `DELETE FROM articles WHERE id= ? `
+  const query =  `UPDATE articles SET is_deleted="1"  WHERE id = ${id}`;
   const data = [id]
   connection.query(query,data,(err,result)=>{
   if (err) {
